@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>戰力排行榜</title>
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg-1: #1c1830;
+    --bg-2: #0b0a14;
+    --text-main: #e8e4f5;
+    --text-sub: #7a7594;
+    --text-faint: #5c5678;
+    --surface: #16132a;
+    --surface-hover: #221d3c;
+    --border: #322c52;
+    --border-soft: #2a2545;
+    --accent: #8a6fd4;
+    --accent-2: #5c4a9e;
+    --gold: #f2c14e;
+    --pink: #e8b4f0;
+    --rank-bg: #2a2545;
+    --rank-text: #9a92c2;
+    --danger: #f27a7a;
+    --tab-text: #9a92c2;
+    --pill-bg: #221d3c;
+    --pill-text: #6c6690;
+  }
+  [data-theme="light"] {
+    --bg-1: #f3effc;
+    --bg-2: #ffffff;
+    --text-main: #2a2540;
+    --text-sub: #6b6488;
+    --text-faint: #9a92b8;
+    --surface: #ffffff;
+    --surface-hover: #ece6fa;
+    --border: #d9d0f0;
+    --border-soft: #e2dbf5;
+    --accent: #8a6fd4;
+    --accent-2: #6f56c0;
+    --gold: #c9911e;
+    --pink: #b3529f;
+    --rank-bg: #ece6fa;
+    --rank-text: #6f56c0;
+    --danger: #d14f4f;
+    --tab-text: #6b6488;
+    --pill-bg: #ece6fa;
+    --pill-text: #8a82ab;
+  }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 0%, var(--bg-1) 0%, var(--bg-2) 60%);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    color: var(--text-main);
+    padding: 40px 20px 80px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; }
+  h1 {
+    text-align: center;
+    font-size: 28px;
+    letter-spacing: 2px;
+    margin-bottom: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 2px 8px;
+    display: inline-block;
+  }
+  h1:hover { box-shadow: 0 0 0 1px var(--border) inset; }
+  h1 input {
+    font-size: 28px;
+    letter-spacing: 2px;
+    text-align: center;
+    color: var(--gold);
+    border-color: var(--accent);
+    max-width: 320px;
+    width: 100%;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--text-sub);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+  input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text-main);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input::placeholder { color: var(--text-faint); }
+  input:focus { border-color: var(--accent); }
+  .form-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  button#viewToggle, button#themeToggle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--tab-text);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  button#viewToggle:hover, button#themeToggle:hover { border-color: var(--accent); color: var(--text-main); }
+  button#addBtn {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, opacity 0.15s;
+  }
+  button#addBtn:hover { opacity: 0.9; }
+  button#addBtn:active { transform: scale(0.97); }
+  .error {
+    color: var(--danger);
+    font-size: 13px;
+    margin: -18px 0 20px 4px;
+    display: none;
+  }
+  .list { display: flex; flex-direction: column; gap: 10px; }
+  .list.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+  }
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    padding: 12px 16px;
+    animation: fadeIn 0.25s ease;
+  }
+  .img-btn {
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    cursor: pointer;
+    color: var(--pill-text);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s;
+    overflow: hidden;
+    padding: 0;
+  }
+  .img-btn:hover { border-color: var(--accent); color: var(--text-main); }
+  .img-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .row-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .grid .row {
+    align-items: center;
+    text-align: center;
+    padding: 20px 12px 16px;
+    position: relative;
+  }
+  .grid .row-main {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .grid .row .name { width: 100%; }
+  .grid .row .power { min-width: unset; }
+  .grid .row .del {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+  }
+  .grid .rank {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .rank {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: var(--rank-bg);
+    color: var(--rank-text);
+  }
+  .rank.gold { background: linear-gradient(135deg, #f2c14e, #b8860b); color: #2a1c00; }
+  .rank.silver { background: linear-gradient(135deg, #d8d8e0, #9a9aab); color: #24242e; }
+  .rank.bronze { background: linear-gradient(135deg, #cd8b5c, #8a5a34); color: #2a1a0c; }
+  .name { flex: 1; font-size: 16px; font-weight: 500; cursor: pointer; border-radius: 6px; padding: 2px 6px; transition: background 0.15s; }
+  .name:hover { background: var(--surface-hover); }
+  .name input {
+    width: 100%;
+    padding: 4px 6px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-main);
+    border-color: var(--accent);
+  }
+  .power { font-size: 15px; font-weight: 600; color: var(--gold); min-width: 70px; text-align: right; cursor: pointer; border-radius: 6px; padding: 2px 6px; transition: background 0.15s; }
+  .power:hover { background: var(--surface-hover); }
+  .power input {
+    width: 90px;
+    text-align: right;
+    padding: 4px 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold);
+    border-color: var(--accent);
+  }
+  .del {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .del:hover { color: var(--danger); }
+  .star-btn {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+    transition: color 0.15s, transform 0.1s;
+  }
+  .star-btn:hover { color: var(--gold); }
+  .star-btn.active { color: var(--gold); }
+  .star-btn.active:active { transform: scale(0.9); }
+  .row.marked {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 1px var(--gold);
+  }
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 16px;
+    color: var(--tab-text);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .tab:hover { border-color: var(--accent); color: var(--text-main); }
+  .tab.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-color: transparent;
+    color: #fff;
+    font-weight: 500;
+  }
+  .lanes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .grid .lanes { justify-content: center; }
+  .lane-pill {
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    color: var(--pill-text);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+  }
+  .lane-pill:hover { border-color: var(--accent); }
+  .lane-pill.active {
+    background: rgba(138,111,212,0.25);
+    border-color: var(--accent);
+    color: var(--text-main);
+  }
+  .empty {
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 14px;
+    padding: 40px 0;
+  }
+  .auth-row {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 18px;
+  }
+  .auth-link {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 4px;
+  }
+  .auth-link:hover { color: var(--accent); }
+  .auth-status {
+    font-size: 12px;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .auth-form {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 260px;
+    margin: 0 auto 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+  }
+  .auth-form.open { display: flex; }
+  .auth-form input { padding: 8px 10px; font-size: 13px; }
+  .auth-form button {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .auth-error {
+    color: var(--danger);
+    font-size: 12px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 id="title">戰力排行榜</h1>
+  <div class="subtitle">輸入角色名稱、戰力與分路，自動排序</div>
+
+  <div class="auth-row" id="authRow">
+    <button class="auth-link" id="authLink">管理登入</button>
+  </div>
+  <div class="auth-form" id="authForm">
+    <input type="email" id="authEmail" placeholder="Email">
+    <input type="password" id="authPassword" placeholder="密碼">
+    <div class="auth-error" id="authError">登入失敗，請確認帳號密碼</div>
+    <button id="authSubmit">登入</button>
+  </div>
+
+  <div class="form-row" id="formRow">
+    <button id="addBtn" style="display:none;">+ 新增角色</button>
+    <button id="viewToggle" aria-label="切換顯示格式">⊞</button>
+    <button id="themeToggle" aria-label="切換亮暗主題">☾</button>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="list" id="list"></div>
+  <input type="file" id="imgInput" accept="image/*" style="display:none;">
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import {
+    getFirestore, doc, onSnapshot, setDoc
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  import {
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBj_4lxTHCh37UJ9KaiZmIwbkygDUQxeNs",
+    authDomain: "xyratex001.firebaseapp.com",
+    projectId: "xyratex001",
+    storageBucket: "xyratex001.firebasestorage.app",
+    messagingSenderId: "771758627219",
+    appId: "1:771758627219:web:b12f25f0becfd1fdeaf066"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const rankingRef = doc(db, "rankings", "main");
+
+  let isAdmin = false;
+  let suppressNextWrite = false;
+
+  let characters = [];
+  const STORAGE_KEY = 'characters';
+  const TITLE_KEY = 'title';
+  const VIEW_KEY = 'viewMode';
+  const LANES = ['凱薩路', '打野', '中路', '魔龍路', '輔助'];
+  let title = '戰力排行榜';
+  let viewMode = 'list';
+  let currentTab = '全部';
+
+  const THEME_KEY = 'theme';
+  let theme = 'dark';
+
+  const addBtn = document.getElementById('addBtn');
+  const viewToggle = document.getElementById('viewToggle');
+  const themeToggle = document.getElementById('themeToggle');
+  const listEl = document.getElementById('list');
+  const titleEl = document.getElementById('title');
+  const tabsEl = document.getElementById('tabs');
+  const imgInput = document.getElementById('imgInput');
+  let pendingImageId = null;
+  const authRow = document.getElementById('authRow');
+  const authLink = document.getElementById('authLink');
+  const authForm = document.getElementById('authForm');
+  const authEmail = document.getElementById('authEmail');
+  const authPassword = document.getElementById('authPassword');
+  const authError = document.getElementById('authError');
+  const authSubmit = document.getElementById('authSubmit');
+
+  function renderTabs() {
+    const tabs = ['全部', ...LANES];
+    tabsEl.innerHTML = tabs.map(t =>
+      `<div class="tab ${t === currentTab ? 'active' : ''}" data-tab="${t}">${t}</div>`
+    ).join('');
+  }
+
+  tabsEl.addEventListener('click', e => {
+    const tab = e.target.dataset.tab;
+    if (!tab) return;
+    currentTab = tab;
+    renderTabs();
+    render();
+  });
+
+  async function loadData() {
+    try {
+      const savedView = localStorage.getItem(VIEW_KEY);
+      if (savedView === 'grid' || savedView === 'list') viewMode = savedView;
+    } catch (err) {
+      // 保留預設視圖
+    }
+    try {
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      if (savedTheme === 'light' || savedTheme === 'dark') theme = savedTheme;
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) theme = 'light';
+    } catch (err) {
+      // 保留預設主題
+    }
+    applyViewMode();
+    applyTheme();
+    renderTabs();
+
+    onSnapshot(rankingRef, snap => {
+      const data = snap.data();
+      characters = (data && data.characters) || [];
+      title = (data && data.title) || '戰力排行榜';
+      titleEl.textContent = title;
+      render();
+    }, err => {
+      console.error('讀取失敗', err);
+      listEl.innerHTML = '<div class="empty">讀取資料失敗，請確認網路連線</div>';
+    });
+  }
+
+  async function saveData() {
+    try {
+      await setDoc(rankingRef, { title, characters }, { merge: true });
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  }
+
+  async function saveTitle() {
+    try {
+      await setDoc(rankingRef, { title, characters }, { merge: true });
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  }
+
+  function updateAuthUI() {
+    addBtn.style.display = isAdmin ? '' : 'none';
+    if (isAdmin) {
+      authRow.innerHTML = '<div class="auth-status">已登入管理模式<button class="auth-link" id="logoutBtn">登出</button></div>';
+      document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+      authForm.classList.remove('open');
+    } else {
+      authRow.innerHTML = '<button class="auth-link" id="authLink">管理登入</button>';
+      document.getElementById('authLink').addEventListener('click', () => {
+        authForm.classList.toggle('open');
+      });
+    }
+    render();
+  }
+
+  onAuthStateChanged(auth, user => {
+    isAdmin = !!user;
+    updateAuthUI();
+  });
+
+  authSubmit.addEventListener('click', async () => {
+    authError.style.display = 'none';
+    try {
+      await signInWithEmailAndPassword(auth, authEmail.value.trim(), authPassword.value);
+      authEmail.value = '';
+      authPassword.value = '';
+    } catch (err) {
+      authError.style.display = 'block';
+    }
+  });
+
+  authPassword.addEventListener('keydown', e => {
+    if (e.key === 'Enter') authSubmit.click();
+  });
+
+  function render() {
+    const filtered = currentTab === '全部'
+      ? characters
+      : characters.filter(c => (c.lanes || []).includes(currentTab));
+    const sorted = [...filtered].sort((a, b) => b.power - a.power);
+    if (sorted.length === 0) {
+      listEl.innerHTML = `<div class="empty">${currentTab === '全部' ? '尚無資料，新增第一個角色吧' : '此分路尚無角色'}</div>`;
+      return;
+    }
+    listEl.innerHTML = sorted.map((c, i) => {
+      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      const total = sorted.length;
+      const intensity = total > 1 ? 1 - (i / (total - 1)) * 0.85 : 0.6;
+      const alpha = (intensity * 0.4).toFixed(2);
+      const bg = `linear-gradient(90deg, rgba(138,111,212,${alpha}) 0%, var(--surface) 65%)`;
+      const lanes = c.lanes || [];
+      const imgBtnContent = c.image ? `<img src="${c.image}" alt="">` : '+';
+      const rowClass = c.marked ? 'row marked' : 'row';
+      const imgBtnHtml = isAdmin ? `<button class="img-btn" data-id="${c.id}" aria-label="上傳角色圖片">${imgBtnContent}</button>` : (c.image ? `<div class="img-btn" style="cursor:default;">${imgBtnContent}</div>` : '');
+      const nameEditable = isAdmin ? `class="name" data-id="${c.id}" data-name="${escapeHtml(c.name)}"` : `class="name" style="cursor:default;"`;
+      const powerEditable = isAdmin ? `class="power" data-id="${c.id}" data-power="${c.power}"` : `class="power" style="cursor:default;"`;
+      const starHtml = isAdmin
+        ? `<button class="star-btn ${c.marked ? 'active' : ''}" data-id="${c.id}" aria-label="標記角色">♛</button>`
+        : (c.marked ? `<span class="star-btn active" style="cursor:default;">♛</span>` : '');
+      const delHtml = isAdmin ? `<button class="del" data-id="${c.id}" aria-label="刪除">×</button>` : '';
+      const lanePills = LANES.filter(l => isAdmin || lanes.includes(l)).map(l =>
+        `<div class="lane-pill ${lanes.includes(l) ? 'active' : ''}" ${isAdmin ? `data-id="${c.id}" data-lane="${l}"` : 'style="cursor:default;"'}>${l}</div>`
+      ).join('');
+      return `
+        <div class="${rowClass}" style="background: ${bg};">
+          <div class="row-main">
+            <div class="rank ${rankClass}">${i + 1}</div>
+            ${imgBtnHtml}
+            <div ${nameEditable}>${escapeHtml(c.name)}</div>
+            <div ${powerEditable}>${c.power.toLocaleString()}</div>
+            ${starHtml}
+            ${delHtml}
+          </div>
+          <div class="lanes">${lanePills}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function addCharacter() {
+    if (!isAdmin) return;
+    const newChar = { id: Date.now() + Math.random(), name: '新角色', power: 0, lanes: [], image: null, marked: false };
+    characters.push(newChar);
+    render();
+    saveData();
+    const nameEl = listEl.querySelector(`.name[data-id="${newChar.id}"]`);
+    if (nameEl) startEditName(nameEl);
+  }
+
+  function applyViewMode() {
+    listEl.classList.toggle('grid', viewMode === 'grid');
+    viewToggle.textContent = viewMode === 'grid' ? '☰' : '⊞';
+    viewToggle.setAttribute('aria-label', viewMode === 'grid' ? '切換為清單顯示' : '切換為卡片顯示');
+  }
+
+  function applyTheme() {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'light' ? '☀' : '☾';
+    themeToggle.setAttribute('aria-label', theme === 'light' ? '切換為暗色主題' : '切換為亮色主題');
+  }
+
+  themeToggle.addEventListener('click', () => {
+    theme = theme === 'light' ? 'dark' : 'light';
+    applyTheme();
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  });
+
+  viewToggle.addEventListener('click', () => {
+    viewMode = viewMode === 'grid' ? 'list' : 'grid';
+    applyViewMode();
+    try {
+      localStorage.setItem(VIEW_KEY, viewMode);
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  });
+
+  addBtn.addEventListener('click', addCharacter);
+
+  listEl.addEventListener('click', e => {
+    if (!isAdmin) return;
+    if (e.target.classList.contains('star-btn')) {
+      const id = e.target.dataset.id;
+      const target = characters.find(c => String(c.id) === id);
+      if (target) {
+        target.marked = !target.marked;
+        saveData();
+        render();
+      }
+      return;
+    }
+    if (e.target.classList.contains('del')) {
+      const id = e.target.dataset.id;
+      characters = characters.filter(c => String(c.id) !== id);
+      render();
+      saveData();
+      return;
+    }
+    if (e.target.classList.contains('lane-pill')) {
+      const id = e.target.dataset.id;
+      const lane = e.target.dataset.lane;
+      const target = characters.find(c => String(c.id) === id);
+      if (target) {
+        if (!target.lanes) target.lanes = [];
+        const idx = target.lanes.indexOf(lane);
+        if (idx === -1) target.lanes.push(lane);
+        else target.lanes.splice(idx, 1);
+        saveData();
+        render();
+      }
+      return;
+    }
+    if (e.target.closest('.img-btn')) {
+      const btn = e.target.closest('.img-btn');
+      pendingImageId = btn.dataset.id;
+      imgInput.value = '';
+      imgInput.click();
+      return;
+    }
+    if (e.target.classList.contains('power')) {
+      startEditPower(e.target);
+      return;
+    }
+    if (e.target.classList.contains('name')) {
+      startEditName(e.target);
+    }
+  });
+
+  imgInput.addEventListener('change', () => {
+    const file = imgInput.files && imgInput.files[0];
+    if (!file || !pendingImageId) return;
+    const id = pendingImageId;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 480;
+        let w = img.width, h = img.height;
+        if (w > h && w > maxDim) { h = h * (maxDim / w); w = maxDim; }
+        else if (h > maxDim) { w = w * (maxDim / h); h = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+        const target = characters.find(c => String(c.id) === id);
+        if (target) {
+          target.image = dataUrl;
+          saveData();
+          render();
+        }
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  titleEl.addEventListener('click', () => {
+    if (!isAdmin) return;
+    if (titleEl.querySelector('input')) return;
+    const current = title;
+    titleEl.innerHTML = `<input type="text" value="${escapeHtml(current)}" maxlength="30">`;
+    const input = titleEl.querySelector('input');
+    input.focus();
+    input.select();
+
+    function commit() {
+      const val = input.value.trim();
+      title = val || current;
+      titleEl.textContent = title;
+      saveTitle();
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') input.blur();
+      if (ev.key === 'Escape') { titleEl.textContent = current; }
+    });
+    input.addEventListener('click', ev => ev.stopPropagation());
+  });
+
+  function startEditName(el) {
+    const id = el.dataset.id;
+    const current = el.dataset.name;
+    el.innerHTML = `<input type="text" value="${current}" maxlength="20">`;
+    const input = el.querySelector('input');
+    input.focus();
+    input.select();
+
+    function commit() {
+      const val = input.value.trim();
+      if (val) {
+        const target = characters.find(c => String(c.id) === id);
+        if (target) {
+          target.name = val;
+          saveData();
+        }
+      }
+      render();
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') input.blur();
+      if (ev.key === 'Escape') { render(); }
+    });
+    input.addEventListener('click', ev => ev.stopPropagation());
+  }
+
+  function startEditPower(el) {
+    const id = el.dataset.id;
+    const current = el.dataset.power;
+    el.innerHTML = `<input type="number" value="${current}">`;
+    const input = el.querySelector('input');
+    input.focus();
+    input.select();
+
+    function commit() {
+      const val = Number(input.value);
+      if (input.value !== '' && !isNaN(val)) {
+        const target = characters.find(c => String(c.id) === id);
+        if (target) {
+          target.power = val;
+          saveData();
+        }
+      }
+      render();
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') input.blur();
+      if (ev.key === 'Escape') { render(); }
+    });
+    input.addEventListener('click', ev => ev.stopPropagation());
+  }
+
+  listEl.innerHTML = '<div class="empty">載入中...</div>';
+  loadData();
+</script>
+</body>
+</html>
