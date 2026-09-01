@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>戰力排行榜</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  :root {
+    --bg-1: #201811;
+    --bg-2: #070503;
+    --text-main: #f2e9d6;
+    --text-sub: #a99878;
+    --text-faint: #6e5f47;
+    --surface: #1c150e;
+    --surface-hover: #2b2016;
+    --border: #4a3820;
+    --border-soft: #2e2418;
+    --accent: #c9a24a;
+    --accent-2: #8c2020;
+    --gold: #f2c14e;
+    --pink: #e2574c;
+    --rank-bg: #2b2016;
+    --rank-text: #c9a24a;
+    --danger: #e2574c;
+    --tab-text: #a99878;
+    --pill-bg: #2b2016;
+    --pill-text: #8a7554;
+  }
+  [data-theme="light"] {
+    --bg-1: #f1e6cd;
+    --bg-2: #fbf6ea;
+    --text-main: #2c2011;
+    --text-sub: #6d5b3d;
+    --text-faint: #a4906a;
+    --surface: #fffaf0;
+    --surface-hover: #f1e4c4;
+    --border: #d9c393;
+    --border-soft: #e8dab4;
+    --accent: #9c7a1f;
+    --accent-2: #8c2020;
+    --gold: #a6791b;
+    --pink: #b23a30;
+    --rank-bg: #f1e4c4;
+    --rank-text: #7a5c1e;
+    --danger: #b23a30;
+    --tab-text: #6d5b3d;
+    --pill-bg: #f1e4c4;
+    --pill-text: #8a744d;
+  }
+
+  /* 靛藍科技 */
+  [data-theme="dark"][data-palette="cyber"] {
+    --bg-1: #0f1c2e;
+    --bg-2: #050a12;
+    --text-main: #dbe9f7;
+    --text-sub: #7d95ad;
+    --text-faint: #4d5f75;
+    --surface: #0e1a2a;
+    --surface-hover: #16283f;
+    --border: #234a70;
+    --border-soft: #1a3350;
+    --accent: #4aa3ff;
+    --accent-2: #123a63;
+    --gold: #6fd3ff;
+    --pink: #4aa3ff;
+    --rank-bg: #16283f;
+    --rank-text: #7bb8f2;
+    --danger: #ff6b6b;
+    --tab-text: #7d95ad;
+    --pill-bg: #16283f;
+    --pill-text: #6f88a3;
+  }
+  [data-theme="light"][data-palette="cyber"] {
+    --bg-1: #dceeff;
+    --bg-2: #f4faff;
+    --text-main: #0f2438;
+    --text-sub: #45607a;
+    --text-faint: #8ea6bd;
+    --surface: #ffffff;
+    --surface-hover: #e2f0fc;
+    --border: #b7d8f2;
+    --border-soft: #cfe6f8;
+    --accent: #1f7ae0;
+    --accent-2: #0d4c8c;
+    --gold: #1f7ae0;
+    --pink: #1f7ae0;
+    --rank-bg: #e2f0fc;
+    --rank-text: #14588f;
+    --danger: #d1453b;
+    --tab-text: #45607a;
+    --pill-bg: #e2f0fc;
+    --pill-text: #5b7995;
+  }
+
+  /* 翠玉森林 */
+  [data-theme="dark"][data-palette="jade"] {
+    --bg-1: #10241a;
+    --bg-2: #05100b;
+    --text-main: #dcf5e6;
+    --text-sub: #7fa896;
+    --text-faint: #4c6b5b;
+    --surface: #0f1f17;
+    --surface-hover: #18301f;
+    --border: #275c3d;
+    --border-soft: #1c4530;
+    --accent: #2ed573;
+    --accent-2: #145a32;
+    --gold: #7be8a4;
+    --pink: #2ed573;
+    --rank-bg: #18301f;
+    --rank-text: #7be8a4;
+    --danger: #ff6b6b;
+    --tab-text: #7fa896;
+    --pill-bg: #18301f;
+    --pill-text: #679c81;
+  }
+  [data-theme="light"][data-palette="jade"] {
+    --bg-1: #dcf3e3;
+    --bg-2: #f3faf5;
+    --text-main: #10291b;
+    --text-sub: #43604e;
+    --text-faint: #8bab97;
+    --surface: #ffffff;
+    --surface-hover: #e4f5e9;
+    --border: #b9e0c6;
+    --border-soft: #d0ecd9;
+    --accent: #1f9c4f;
+    --accent-2: #0f5c2d;
+    --gold: #1f9c4f;
+    --pink: #1f9c4f;
+    --rank-bg: #e4f5e9;
+    --rank-text: #14602f;
+    --danger: #d1453b;
+    --tab-text: #43604e;
+    --pill-bg: #e4f5e9;
+    --pill-text: #5a7d68;
+  }
+
+  /* 緋櫻 */
+  [data-theme="dark"][data-palette="sakura"] {
+    --bg-1: #2a1420;
+    --bg-2: #12070c;
+    --text-main: #fbe4ee;
+    --text-sub: #b07f96;
+    --text-faint: #6b4a5a;
+    --surface: #241019;
+    --surface-hover: #351a26;
+    --border: #6b3350;
+    --border-soft: #4d2438;
+    --accent: #ff6fa5;
+    --accent-2: #8c1f4a;
+    --gold: #ffa4c4;
+    --pink: #ff6fa5;
+    --rank-bg: #351a26;
+    --rank-text: #ffa4c4;
+    --danger: #ff6b6b;
+    --tab-text: #b07f96;
+    --pill-bg: #351a26;
+    --pill-text: #a4728a;
+  }
+  [data-theme="light"][data-palette="sakura"] {
+    --bg-1: #fbe1ec;
+    --bg-2: #fef6f9;
+    --text-main: #3a1524;
+    --text-sub: #7a4a5e;
+    --text-faint: #bd8fa1;
+    --surface: #ffffff;
+    --surface-hover: #fce6ef;
+    --border: #f3c1d6;
+    --border-soft: #f8d6e5;
+    --accent: #e0417d;
+    --accent-2: #8c1f4a;
+    --gold: #e0417d;
+    --pink: #e0417d;
+    --rank-bg: #fce6ef;
+    --rank-text: #a02458;
+    --danger: #d1453b;
+    --tab-text: #7a4a5e;
+    --pill-bg: #fce6ef;
+    --pill-text: #9c6a80;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background:
+      repeating-linear-gradient(45deg, rgba(201,164,74,0.06) 0, rgba(201,164,74,0.06) 1px, transparent 1px, transparent 48px),
+      repeating-linear-gradient(-45deg, rgba(201,164,74,0.06) 0, rgba(201,164,74,0.06) 1px, transparent 1px, transparent 48px),
+      radial-gradient(ellipse 900px 500px at 50% -10%, rgba(201,164,74,0.16) 0%, transparent 60%),
+      radial-gradient(circle at 50% 0%, var(--bg-1) 0%, var(--bg-2) 65%);
+    font-family: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
+    color: var(--text-main);
+    padding: 40px 20px 80px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .wrap { max-width: 640px; margin: 0 auto; text-align: center; transition: max-width 0.2s; }
+  .wrap.wide-mode { max-width: 1100px; }
+  .title-wrap {
+    margin-bottom: 40px;
+  }
+  h1 {
+    text-align: center;
+    font-family: "Noto Serif TC", "Noto Sans TC", serif;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 10px;
+    margin: 0;
+    background: linear-gradient(100deg, var(--accent) 0%, var(--gold) 35%, var(--accent-2) 60%, var(--accent) 100%);
+    background-size: 300% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    cursor: pointer;
+    padding: 4px 12px;
+    display: inline-block;
+    animation: shine 6s linear infinite;
+    filter: drop-shadow(0 0 20px rgba(201, 164, 74, 0.35));
+    position: relative;
+  }
+  @keyframes shine {
+    to { background-position: 300% center; }
+  }
+  h1::before, h1::after {
+    content: '';
+    display: inline-block;
+    width: 34px;
+    height: 1px;
+    vertical-align: middle;
+    background: linear-gradient(90deg, transparent, var(--accent));
+    margin: 0 14px 6px 0;
+  }
+  h1::after {
+    background: linear-gradient(90deg, var(--accent), transparent);
+    margin: 0 0 6px 14px;
+  }
+  h1:hover { filter: drop-shadow(0 0 30px rgba(201, 164, 74, 0.55)); }
+  h1 input {
+    font-family: "Noto Serif TC", serif;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    text-align: center;
+    color: var(--gold);
+    border-color: var(--accent);
+    max-width: 360px;
+    width: 100%;
+  }
+  .subtitle {
+    text-align: center;
+    color: var(--text-sub);
+    font-size: 13px;
+    margin-bottom: 32px;
+  }
+  input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    color: var(--text-main);
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  input::placeholder { color: var(--text-faint); }
+  input:focus { border-color: var(--accent); }
+  .form-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 28px;
+  }
+  button#viewToggle, button#themeToggle, button#exportBtn, button#paletteToggle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    padding: 12px 16px;
+    color: var(--tab-text);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  button#viewToggle:hover, button#themeToggle:hover, button#exportBtn:hover, button#paletteToggle:hover { border-color: var(--accent); color: var(--text-main); }
+  button#addBtn, #bulkBtn, #snapshotBtn {
+    position: relative;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: 1px solid rgba(255,255,255,0.15);
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+    padding: 12px 28px;
+    color: #fff8e8;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: transform 0.1s, filter 0.15s;
+  }
+  button#addBtn:hover, #bulkBtn:hover, #snapshotBtn:hover { filter: brightness(1.12); }
+  button#addBtn:active, #bulkBtn:active, #snapshotBtn:active { transform: scale(0.97); }
+  .cols-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin: -8px 0 20px;
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .cols-row button {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    width: 22px;
+    height: 22px;
+    color: var(--text-main);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cols-row button:hover { border-color: var(--accent); }
+  .cols-row button:active { transform: scale(0.9); }
+  #colsValue { min-width: 16px; text-align: center; color: var(--gold); font-weight: 700; }
+  .error {
+    color: var(--danger);
+    font-size: 13px;
+    margin: -18px 0 20px 4px;
+    display: none;
+  }
+  .list { display: flex; flex-direction: column; gap: 10px; }
+  .list.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 14px;
+  }
+  .row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border: 1px solid var(--border-soft);
+    border-left: 3px solid var(--border);
+    border-radius: 4px;
+    padding: 12px 16px;
+    opacity: 0;
+    animation: rowIn 0.4s ease forwards;
+    animation-delay: var(--row-delay, 0s);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .row:active { transform: scale(0.985); }
+  @keyframes rowIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .img-btn {
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    cursor: pointer;
+    color: var(--pill-text);
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s, transform 0.1s;
+    overflow: hidden;
+    padding: 0;
+  }
+  .img-btn:active { transform: scale(0.88); }
+  .mark-btn {
+    background: none;
+    border: 2px solid var(--text-faint);
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .mark-btn:hover { border-color: var(--gold); }
+  .mark-btn.active { background: var(--gold); border-color: var(--gold); }
+  .mark-btn:active { transform: scale(0.8); }
+  .img-btn:hover { border-color: var(--accent); color: var(--text-main); }
+  .img-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .row-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .grid .row {
+    align-items: center;
+    text-align: center;
+    padding: 20px 12px 16px;
+    position: relative;
+  }
+  .grid .row-main {
+    flex-direction: column;
+    gap: 10px;
+  }
+  .grid .row .name { width: 100%; text-align: center; }
+  .grid .row .power { min-width: unset; }
+  .grid .row .del {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+  }
+  .grid .rank {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+  .list.compact {
+    display: grid;
+    grid-template-columns: repeat(var(--compact-cols, 4), minmax(0, 1fr));
+    gap: 8px;
+  }
+  .compact .row {
+    min-width: 0;
+    overflow: hidden;
+    align-items: center;
+    text-align: center;
+    padding: 10px 6px 10px;
+    position: relative;
+    border-left: 1px solid var(--border-soft);
+    gap: 6px;
+  }
+  .compact .row-main {
+    flex-direction: column;
+    gap: 6px;
+    position: relative;
+    width: 100%;
+  }
+  .compact .rank {
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+    z-index: 2;
+  }
+  .compact .img-btn {
+    width: min(64px, 100%);
+    aspect-ratio: 1 / 1;
+    height: auto;
+    border-radius: 10px;
+    font-size: 24px;
+  }
+  .compact .name {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(8px, calc(14px - var(--compact-cols, 4) * 0.45px), 12px);
+    padding: 0 2px;
+    white-space: normal;
+    word-break: break-all;
+    line-height: 1.2;
+  }
+  .compact .power {
+    width: 100%;
+    text-align: center;
+    font-size: clamp(9px, calc(15px - var(--compact-cols, 4) * 0.45px), 14px);
+    min-width: unset;
+  }
+  .compact .lanes,
+  .compact .mode-toggle-chip,
+  .compact .del {
+    display: none;
+  }
+  .compact .row[data-tier] {
+    box-shadow: 0 0 0 1px var(--tier-color), 0 0 10px var(--tier-glow);
+  }
+
+  .rank {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    background: var(--rank-bg);
+    color: var(--rank-text);
+    position: relative;
+    overflow: hidden;
+  }
+  .rank.gold, .rank.silver, .rank.bronze {
+    background-size: 220% 220%;
+  }
+  .rank.gold { background-image: linear-gradient(135deg, #fff3c4, #f2c14e, #b8860b, #f2c14e, #fff3c4); color: #2a1c00; animation: shimmer 3s linear infinite; }
+  .rank.silver { background-image: linear-gradient(135deg, #f4f4f8, #d8d8e0, #9a9aab, #d8d8e0, #f4f4f8); color: #24242e; animation: shimmer 3.4s linear infinite; }
+  .rank.bronze { background-image: linear-gradient(135deg, #ecb98a, #cd8b5c, #8a5a34, #cd8b5c, #ecb98a); color: #2a1a0c; animation: shimmer 3.8s linear infinite; }
+  @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+  .rank.gold::after, .rank.silver::after, .rank.bronze::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.75) 48%, transparent 66%);
+    background-size: 250% 250%;
+    animation: sweep 2.6s ease-in-out infinite;
+  }
+  @keyframes sweep {
+    0% { background-position: 200% 200%; }
+    60%, 100% { background-position: -50% -50%; }
+  }
+  .name { flex: 1; font-size: 16px; font-weight: 500; cursor: pointer; border-radius: 6px; padding: 2px 6px; transition: background 0.15s; text-align: left; }
+  .name:hover { background: var(--surface-hover); }
+  .name input {
+    width: 100%;
+    padding: 4px 6px;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-main);
+    border-color: var(--accent);
+  }
+  .power { font-size: 15px; font-weight: 600; color: var(--gold); min-width: 70px; text-align: right; cursor: pointer; border-radius: 6px; padding: 2px 6px; transition: background 0.15s; }
+  .power:hover { background: var(--surface-hover); }
+  .power input {
+    width: 90px;
+    text-align: right;
+    padding: 4px 6px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--gold);
+    border-color: var(--accent);
+  }
+  .del {
+    background: none;
+    border: none;
+    color: var(--text-faint);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+    transition: color 0.15s;
+  }
+  .del:hover { color: var(--danger); }
+
+  .row.just-updated {
+    animation: rowIn 0.4s ease forwards, flashUpdate 0.6s ease;
+  }
+  @keyframes flashUpdate {
+    0% { box-shadow: 0 0 0 2px var(--accent), 0 0 18px rgba(201,164,74,0.5); }
+    100% { box-shadow: none; }
+  }
+    border-color: rgba(201,164,74,0.5);
+    box-shadow: 0 2px 12px rgba(201,164,74,0.12);
+  }
+  .row.top10 .rank {
+    font-size: 15px;
+    box-shadow: 0 0 0 2px var(--bg-2), 0 0 0 3px var(--border);
+  }
+  .row.rank1 {
+    border-color: #f2c14e;
+    box-shadow: 0 0 0 1px #f2c14e, 0 4px 20px rgba(242,193,78,0.25);
+    animation: rowIn 0.4s ease forwards, pulseGold 2.4s ease-in-out 0.4s infinite;
+    animation-delay: var(--row-delay, 0s), calc(var(--row-delay, 0s) + 0.4s);
+  }
+  .row.rank1 .rank {
+    width: 40px;
+    height: 40px;
+    font-size: 17px;
+  }
+  .row.rank2 {
+    border-color: #c8c8d4;
+    box-shadow: 0 0 0 1px #c8c8d4, 0 4px 16px rgba(0,0,0,0.15);
+  }
+  .row.rank3 {
+    border-color: #cd8b5c;
+    box-shadow: 0 0 0 1px #cd8b5c, 0 4px 16px rgba(0,0,0,0.15);
+  }
+  @keyframes pulseGold {
+    0%, 100% { box-shadow: 0 0 0 1px var(--gold), 0 4px 20px rgba(242,193,78,0.25); }
+    50% { box-shadow: 0 0 0 1px var(--gold), 0 4px 28px rgba(242,193,78,0.45); }
+  }
+  .row[data-tier] {
+    border-color: var(--tier-color);
+    box-shadow: 0 0 0 1px var(--tier-color), 0 0 14px var(--tier-glow);
+  }
+  .grid .row[data-tier] {
+    border-color: var(--tier-color);
+    box-shadow: 0 0 0 1px var(--tier-color), 0 0 14px var(--tier-glow);
+  }
+  .tier-tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    color: #1a1626;
+    background: var(--tier-color);
+    box-shadow: 0 0 8px var(--tier-glow);
+    flex-shrink: 0;
+  }
+  .tier-picker {
+    display: flex;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .tier-chip {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform 0.1s, border-color 0.15s;
+  }
+  .tier-chip:hover { transform: scale(1.15); }
+  .tier-chip.active { border-color: var(--text-main); box-shadow: 0 0 8px currentColor; }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .tab {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-bottom: 2px solid var(--border);
+    padding: 7px 16px;
+    color: var(--tab-text);
+    font-size: 13px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .tab:hover { border-color: var(--accent); color: var(--text-main); }
+  .tab:active { transform: scale(0.94); }
+  .tab.active {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-color: var(--accent);
+    border-bottom: 2px solid var(--gold);
+    color: #fff8e8;
+    font-weight: 700;
+  }
+  .lanes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+  }
+  .grid .lanes { justify-content: center; }
+  .lane-pill {
+    background: var(--pill-bg);
+    border: 1px solid var(--border);
+    padding: 3px 10px;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: var(--pill-text);
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.1s;
+  }
+  .lane-pill:hover { border-color: var(--accent); }
+  .lane-pill:active { transform: scale(0.9); }
+  .lane-pill.active {
+    background: rgba(201,164,74,0.18);
+    border-color: var(--accent);
+    color: var(--text-main);
+  }
+  .empty {
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 14px;
+    padding: 40px 0;
+  }
+  #landingScreen {
+    padding-top: 40px;
+  }
+  .landing-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 320px;
+    margin: 30px auto 0;
+  }
+  .landing-row {
+    display: flex;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .landing-row .landing-item { flex: 1; }
+  .landing-admin-btn {
+    display: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-sub);
+    font-size: 13px;
+    cursor: pointer;
+    padding: 0 10px;
+    flex-shrink: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .landing-admin-btn:hover { border-color: var(--accent); color: var(--text-main); }
+  .landing-admin-btn.del:hover { border-color: var(--danger); color: var(--danger); }
+  body.landing-admin .landing-admin-btn { display: block; }
+  .landing-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    padding: 14px 18px;
+    color: var(--text-main);
+    font-size: 14px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s, transform 0.1s, background 0.15s;
+  }
+  .landing-item:hover { border-color: var(--accent); background: var(--surface-hover); }
+  .landing-item:active { transform: scale(0.98); }
+  .landing-item.live {
+    border-color: var(--accent);
+    background: linear-gradient(135deg, rgba(201,164,74,0.15), transparent);
+    font-weight: 700;
+    color: var(--gold);
+  }
+  .landing-back-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .auth-row {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 50;
+    margin-bottom: 0;
+  }
+  .auth-link {
+    position: relative;
+    background: linear-gradient(135deg, var(--surface), var(--surface-hover));
+    border: 1px solid var(--accent);
+    clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    color: var(--gold);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    padding: 9px 16px;
+    box-shadow: 0 0 12px rgba(201,164,74,0.25), 0 4px 12px rgba(0,0,0,0.35);
+    transition: box-shadow 0.2s, transform 0.15s, color 0.15s;
+  }
+  .auth-link::before {
+    content: '⚜';
+    margin-right: 6px;
+    opacity: 0.9;
+  }
+  .auth-link:hover {
+    color: #fff8e8;
+    box-shadow: 0 0 20px rgba(201,164,74,0.5), 0 4px 14px rgba(0,0,0,0.4);
+    transform: translateY(-1px);
+  }
+  .auth-link:active { transform: translateY(0) scale(0.97); }
+  .auth-status {
+    font-size: 12px;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .auth-form {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 260px;
+    margin: 0 auto 18px;
+    background: var(--surface);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 14px;
+  }
+  .auth-form.open { display: flex; }
+  #authForm {
+    position: fixed;
+    right: 16px;
+    bottom: 60px;
+    z-index: 50;
+    margin: 0;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .auth-form input, .auth-form textarea {
+    padding: 8px 10px;
+    font-size: 13px;
+    background: var(--bg-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-main);
+  }
+  #bulkForm { max-width: 320px; }
+  .auth-form button {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .auth-error {
+    color: var(--danger);
+    font-size: 12px;
+    display: none;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="landingScreen">
+    <div class="title-wrap">
+      <h1>戰力排行榜</h1>
+    </div>
+    <div class="landing-list" id="landingList">
+      <button class="landing-item live" data-target="live">📡 查看目前最新排行榜</button>
+      <div class="empty" id="landingLoading">載入歷史版本中...</div>
+    </div>
+  </div>
+
+  <div id="appContent" style="display:none;">
+    <div class="landing-back-row">
+      <button class="auth-link" id="backToLanding">← 返回選單</button>
+    </div>
+
+    <div class="title-wrap">
+      <h1 id="title">戰力排行榜</h1>
+    </div>
+
+    <div class="auth-row" id="authRow">
+      <button class="auth-link" id="authLink">摸摸小被被</button>
+    </div>
+    <div class="auth-form" id="authForm">
+      <input type="email" id="authEmail" placeholder="Email">
+      <input type="password" id="authPassword" placeholder="密碼">
+      <div class="auth-error" id="authError">登入失敗，請確認帳號密碼</div>
+      <button id="authSubmit">登入</button>
+    </div>
+
+    <div class="form-row" id="formRow">
+      <button id="addBtn" style="display:none;">+ 新增角色</button>
+      <button id="bulkBtn" style="display:none;">批次匯入</button>
+      <button id="snapshotBtn" style="display:none;">存快照</button>
+      <button id="viewToggle" aria-label="切換顯示格式">⊞</button>
+      <button id="themeToggle" aria-label="切換亮暗主題">☾</button>
+      <button id="paletteToggle" aria-label="切換配色風格">🎨</button>
+      <button id="exportBtn" aria-label="匯出 CSV">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12"/>
+          <path d="M7 10l5 5 5-5"/>
+          <path d="M4 19h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="cols-row" id="colsRow" style="display:none;">
+      <span>每列顯示</span>
+      <button id="colsMinus" aria-label="減少欄數">−</button>
+      <span id="colsValue">4</span>
+      <button id="colsPlus" aria-label="增加欄數">+</button>
+      <span>個</span>
+    </div>
+
+    <div class="auth-form" id="bulkForm">
+      <textarea id="bulkNames" rows="8" placeholder="每行一個角色名稱，貼上後按下方按鈕" style="resize:vertical; font-family:inherit;"></textarea>
+      <button id="bulkSubmit">匯入全部</button>
+    </div>
+
+    <div class="tabs" id="tabs"></div>
+
+    <div class="list" id="list"></div>
+    <input type="file" id="imgInput" accept="image/*" style="display:none;">
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
+  import {
+    getFirestore, doc, onSnapshot, setDoc, getDoc, collection, getDocs, query, orderBy, updateDoc, deleteDoc
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
+  import {
+    getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBj_4lxTHCh37UJ9KaiZmIwbkygDUQxeNs",
+    authDomain: "xyratex001.firebaseapp.com",
+    projectId: "xyratex001",
+    storageBucket: "xyratex001.firebasestorage.app",
+    messagingSenderId: "771758627219",
+    appId: "1:771758627219:web:b12f25f0becfd1fdeaf066"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const auth = getAuth(app);
+  const rankingRef = doc(db, "rankings", "main");
+  const snapshotsCol = collection(db, "snapshots");
+
+  let isAdmin = false;
+  let historicalMode = false;
+  let currentSnapshotId = null;
+  function admin() { return isAdmin && !historicalMode; }
+  let suppressNextWrite = false;
+
+  let characters = [];
+  const STORAGE_KEY = 'characters';
+  const TITLE_KEY = 'title';
+  const VIEW_KEY = 'viewMode';
+  const COLS_KEY = 'compactCols';
+  const LANES = ['凱薩路', '打野', '中路', '魔龍路', '輔助'];
+  const TIERS = [
+    { key: '紅', color: '#ff4757', glow: 'rgba(255,71,87,0.55)' },
+    { key: '橙', color: '#ff9f43', glow: 'rgba(255,159,67,0.55)' },
+    { key: '紫', color: '#b46fe0', glow: 'rgba(180,111,224,0.55)' },
+    { key: '藍', color: '#4aa3ff', glow: 'rgba(74,163,255,0.55)' },
+    { key: '綠', color: '#2ed573', glow: 'rgba(46,213,115,0.55)' },
+    { key: '白', color: '#e8e4f5', glow: 'rgba(232,228,245,0.45)' }
+  ];
+  let title = '戰力排行榜';
+  let viewMode = 'list';
+  let compactCols = 4;
+  let currentTab = '全部';
+  let lastEditedId = null;
+
+  const THEME_KEY = 'theme';
+  const PALETTE_KEY = 'palette';
+  let theme = 'dark';
+  const PALETTES = ['battle', 'cyber', 'jade', 'sakura'];
+  const PALETTE_LABELS = { battle: '金紅戰場', cyber: '靛藍科技', jade: '翠玉森林', sakura: '緋櫻' };
+  let palette = 'battle';
+
+  const addBtn = document.getElementById('addBtn');
+  const bulkBtn = document.getElementById('bulkBtn');
+  const bulkForm = document.getElementById('bulkForm');
+  const bulkNames = document.getElementById('bulkNames');
+  const bulkSubmit = document.getElementById('bulkSubmit');
+  const viewToggle = document.getElementById('viewToggle');
+  const themeToggle = document.getElementById('themeToggle');
+  const paletteToggle = document.getElementById('paletteToggle');
+  const exportBtn = document.getElementById('exportBtn');
+  const colsRow = document.getElementById('colsRow');
+  const colsMinus = document.getElementById('colsMinus');
+  const colsPlus = document.getElementById('colsPlus');
+  const colsValue = document.getElementById('colsValue');
+  const listEl = document.getElementById('list');
+  const titleEl = document.getElementById('title');
+  const tabsEl = document.getElementById('tabs');
+  const imgInput = document.getElementById('imgInput');
+  let pendingImageId = null;
+  const authRow = document.getElementById('authRow');
+  const authLink = document.getElementById('authLink');
+  const authForm = document.getElementById('authForm');
+  const authEmail = document.getElementById('authEmail');
+  const authPassword = document.getElementById('authPassword');
+  const authError = document.getElementById('authError');
+  const authSubmit = document.getElementById('authSubmit');
+  const snapshotBtn = document.getElementById('snapshotBtn');
+  const landingScreen = document.getElementById('landingScreen');
+  const landingList = document.getElementById('landingList');
+  const landingLoading = document.getElementById('landingLoading');
+  const appContent = document.getElementById('appContent');
+  const backToLanding = document.getElementById('backToLanding');
+
+  let liveStarted = false;
+
+  function renderTabs() {
+    const tabs = ['全部', ...LANES];
+    tabsEl.innerHTML = tabs.map(t =>
+      `<div class="tab ${t === currentTab ? 'active' : ''}" data-tab="${t}">${t}</div>`
+    ).join('');
+  }
+
+  tabsEl.addEventListener('click', e => {
+    const tab = e.target.dataset.tab;
+    if (!tab) return;
+    currentTab = tab;
+    renderTabs();
+    render();
+  });
+
+  async function loadPreferences() {
+    try {
+      const savedView = localStorage.getItem(VIEW_KEY);
+      if (VIEW_MODES.includes(savedView)) viewMode = savedView;
+      const savedCols = parseInt(localStorage.getItem(COLS_KEY), 10);
+      if (!isNaN(savedCols) && savedCols >= 2 && savedCols <= 20) compactCols = savedCols;
+    } catch (err) {
+      // 保留預設視圖
+    }
+    try {
+      const savedTheme = localStorage.getItem(THEME_KEY);
+      if (savedTheme === 'light' || savedTheme === 'dark') theme = savedTheme;
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) theme = 'light';
+    } catch (err) {
+      // 保留預設主題
+    }
+    try {
+      const savedPalette = localStorage.getItem(PALETTE_KEY);
+      if (PALETTES.includes(savedPalette)) palette = savedPalette;
+    } catch (err) {
+      // 保留預設配色
+    }
+    applyViewMode();
+    applyTheme();
+    applyPalette();
+    renderTabs();
+  }
+
+  function startLive() {
+    if (liveStarted) return;
+    liveStarted = true;
+    onSnapshot(rankingRef, snap => {
+      const data = snap.data();
+      characters = (data && data.characters) || [];
+      title = (data && data.title) || '戰力排行榜';
+      titleEl.textContent = title;
+      render();
+    }, err => {
+      console.error('讀取失敗', err);
+      listEl.innerHTML = '<div class="empty">讀取資料失敗，請確認網路連線</div>';
+    });
+  }
+
+  async function saveData() {
+    if (historicalMode) return;
+    try {
+      await setDoc(rankingRef, { title, characters }, { merge: true });
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  }
+
+  async function saveTitle() {
+    if (historicalMode) return;
+    try {
+      await setDoc(rankingRef, { title, characters }, { merge: true });
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  }
+
+  function updateAuthUI() {
+    addBtn.style.display = admin() ? '' : 'none';
+    bulkBtn.style.display = admin() ? '' : 'none';
+    snapshotBtn.style.display = admin() ? '' : 'none';
+    if (historicalMode) {
+      authRow.style.display = 'none';
+      authForm.classList.remove('open');
+    } else {
+      authRow.style.display = '';
+      if (isAdmin) {
+        authRow.innerHTML = '<div class="auth-status">已登入管理模式<button class="auth-link" id="logoutBtn">登出</button></div>';
+        document.getElementById('logoutBtn').addEventListener('click', () => signOut(auth));
+        authForm.classList.remove('open');
+      } else {
+        authRow.innerHTML = '<button class="auth-link" id="authLink">摸摸小被被</button>';
+        document.getElementById('authLink').addEventListener('click', () => {
+          authForm.classList.toggle('open');
+        });
+      }
+    }
+    render();
+  }
+
+  onAuthStateChanged(auth, user => {
+    isAdmin = !!user;
+    updateAuthUI();
+    updateLandingAdminUI();
+  });
+
+  authSubmit.addEventListener('click', async () => {
+    authError.style.display = 'none';
+    try {
+      await signInWithEmailAndPassword(auth, authEmail.value.trim(), authPassword.value);
+      authEmail.value = '';
+      authPassword.value = '';
+    } catch (err) {
+      authError.style.display = 'block';
+    }
+  });
+
+  authPassword.addEventListener('keydown', e => {
+    if (e.key === 'Enter') authSubmit.click();
+  });
+
+  function renderRow(c, rank, total, index) {
+    const fullData = c.fullData !== false;
+    const overallMedal = fullData ? c._overallMedal : null;
+    const rankClass = overallMedal === 1 ? 'gold' : overallMedal === 2 ? 'silver' : overallMedal === 3 ? 'bronze' : '';
+    const intensity = total > 1 ? 1 - (index / (total - 1)) * 0.85 : 0.6;
+    const alpha = (intensity * 0.4).toFixed(2);
+    const bg = `linear-gradient(90deg, rgba(201,164,74,${alpha}) 0%, var(--surface) 65%)`;
+    const lanes = c.lanes || [];
+    const imgBtnContent = c.image ? `<img src="${c.image}" alt="">` : '+';
+    const rowClasses = ['row'];
+    if (fullData && c._overallTop10) rowClasses.push('top10');
+    if (overallMedal === 1) rowClasses.push('rank1');
+    if (overallMedal === 2) rowClasses.push('rank2');
+    if (overallMedal === 3) rowClasses.push('rank3');
+    if (lastEditedId && String(c.id) === String(lastEditedId)) rowClasses.push('just-updated');
+    const rowClass = rowClasses.join(' ');
+    const imgBtnHtml = admin() ? `<button class="img-btn" data-id="${c.id}" aria-label="上傳角色圖片">${imgBtnContent}</button>` : (c.image ? `<div class="img-btn" style="cursor:default;">${imgBtnContent}</div>` : '');
+    const nameEditable = admin() ? `class="name" data-id="${c.id}" data-name="${escapeHtml(c.name)}"` : `class="name" style="cursor:default;"`;
+    const valueHtml = fullData
+      ? `<div ${admin() ? `class="power" data-id="${c.id}" data-power="${c.power}"` : `class="power" style="cursor:default;"`}>${(c.power || 0).toLocaleString()}</div>`
+      : `<div ${admin() ? `class="power" data-id="${c.id}" data-count="${c.playerCount || 0}"` : `class="power" style="cursor:default;"`}>${(c.playerCount || 0)} 人</div>`;
+    const modeToggleHtml = admin()
+      ? `<button class="lane-pill mode-toggle-chip" data-id="${c.id}" data-mode-toggle="1" style="white-space:nowrap;">${fullData ? '滿10人' : '未滿10人'}</button>`
+      : (fullData ? '' : `<span class="lane-pill mode-toggle-chip" style="cursor:default;">未滿10人</span>`);
+    const starHtml = admin()
+      ? `<button class="mark-btn ${c.marked ? 'active' : ''}" data-id="${c.id}" aria-label="標記角色"></button>`
+      : '';
+    const delHtml = admin() ? `<button class="del" data-id="${c.id}" aria-label="刪除">×</button>` : '';
+    const lanePills = LANES.filter(l => admin() || lanes.includes(l)).map(l =>
+      `<div class="lane-pill ${lanes.includes(l) ? 'active' : ''}" ${admin() ? `data-id="${c.id}" data-lane="${l}"` : 'style="cursor:default;"'}>${l}</div>`
+    ).join('');
+
+    const tierInfo = fullData ? (c._tierInfo || null) : null;
+    const rowDelay = (Math.min(index, 14) * 0.035).toFixed(3);
+    const tierAttr = tierInfo ? `data-tier="${tierInfo.key}" style="background: ${bg}; --tier-color: ${tierInfo.color}; --tier-glow: ${tierInfo.glow}; --row-delay: ${rowDelay}s;"` : `style="background: ${bg}; --row-delay: ${rowDelay}s;"`;
+    const tierTagHtml = '';
+
+    return `
+      <div class="${rowClass}" ${tierAttr}>
+        <div class="row-main">
+          <div class="rank ${rankClass}">${rank}</div>
+          ${imgBtnHtml}
+          <div ${nameEditable}>${escapeHtml(c.name)}</div>
+          ${tierTagHtml}
+          ${valueHtml}
+          ${modeToggleHtml}
+          ${starHtml}
+          ${delHtml}
+        </div>
+        <div class="lanes">${lanePills}</div>
+      </div>
+    `;
+  }
+
+  function computeOverallTiers() {
+    const overallSorted = characters.filter(c => c.fullData !== false).sort((a, b) => b.power - a.power);
+    const remaining = Math.max(overallSorted.length - 3, 0);
+    const bucketSize = Math.max(Math.ceil(remaining / TIERS.length), 1);
+    overallSorted.forEach((c, idx) => {
+      c._overallMedal = idx < 3 ? idx + 1 : null;
+      c._overallTop10 = idx < 10;
+      if (idx < 3) {
+        c._tierInfo = null;
+      } else {
+        const pos = idx - 3;
+        const tierIdx = Math.min(Math.floor(pos / bucketSize), TIERS.length - 1);
+        c._tierInfo = TIERS[tierIdx];
+      }
+    });
+  }
+
+  function render() {
+    computeOverallTiers();
+
+    const filtered = currentTab === '全部'
+      ? characters
+      : characters.filter(c => (c.lanes || []).includes(currentTab));
+    if (filtered.length === 0) {
+      listEl.innerHTML = `<div class="empty">${currentTab === '全部' ? '尚無資料，新增第一個角色吧' : '此分路尚無角色'}</div>`;
+      return;
+    }
+
+    const withPower = filtered.filter(c => c.fullData !== false).sort((a, b) => b.power - a.power);
+    const withoutPower = filtered.filter(c => c.fullData === false).sort((a, b) => (b.playerCount || 0) - (a.playerCount || 0));
+    const combined = [...withPower, ...withoutPower];
+    const total = combined.length;
+
+    listEl.innerHTML = combined.map((c, i) => {
+      let rank;
+      if (i === 0) {
+        rank = 1;
+      } else {
+        const prev = combined[i - 1];
+        const sameGroup = (c.fullData !== false) === (prev.fullData !== false);
+        const sameValue = c.fullData !== false ? prev.power === c.power : (prev.playerCount || 0) === (c.playerCount || 0);
+        rank = sameGroup && sameValue ? prev._rank : i + 1;
+      }
+      c._rank = rank;
+      return renderRow(c, rank, total, i);
+    }).join('');
+
+    if (lastEditedId) {
+      clearTimeout(window._flashTimer);
+      window._flashTimer = setTimeout(() => { lastEditedId = null; }, 900);
+    }
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  function addCharacter() {
+    if (!admin()) return;
+    const newChar = { id: Date.now() + Math.random(), name: '新角色', power: 0, lanes: [], image: null, fullData: true, playerCount: 0, tier: null, marked: false };
+    characters.push(newChar);
+    render();
+    saveData();
+    const nameEl = listEl.querySelector(`.name[data-id="${newChar.id}"]`);
+    if (nameEl) startEditName(nameEl);
+  }
+
+  const VIEW_MODES = ['list', 'grid', 'compact'];
+  const VIEW_ICONS = { list: '⊞', grid: '▦', compact: '◈' };
+  const VIEW_LABELS = { list: '清單', grid: '卡片', compact: '簡潔圖鑑' };
+
+  function applyViewMode() {
+    listEl.classList.toggle('grid', viewMode === 'grid');
+    listEl.classList.toggle('compact', viewMode === 'compact');
+    viewToggle.textContent = VIEW_ICONS[viewMode] || '⊞';
+    viewToggle.setAttribute('aria-label', `目前：${VIEW_LABELS[viewMode]}，點擊切換`);
+    colsRow.style.display = viewMode === 'compact' ? 'flex' : 'none';
+    document.querySelector('.wrap').classList.toggle('wide-mode', viewMode === 'compact');
+    applyCompactCols();
+  }
+
+  function applyCompactCols() {
+    listEl.style.setProperty('--compact-cols', compactCols);
+    colsValue.textContent = compactCols;
+  }
+
+  function applyTheme() {
+    document.documentElement.setAttribute('data-theme', theme);
+    themeToggle.textContent = theme === 'light' ? '☀' : '☾';
+    themeToggle.setAttribute('aria-label', theme === 'light' ? '切換為暗色主題' : '切換為亮色主題');
+  }
+
+  function applyPalette() {
+    document.documentElement.setAttribute('data-palette', palette);
+    paletteToggle.setAttribute('aria-label', `目前配色：${PALETTE_LABELS[palette]}，點擊切換`);
+  }
+
+  themeToggle.addEventListener('click', () => {
+    theme = theme === 'light' ? 'dark' : 'light';
+    applyTheme();
+    render();
+    try {
+      localStorage.setItem(THEME_KEY, theme);
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  });
+
+  paletteToggle.addEventListener('click', () => {
+    const idx = PALETTES.indexOf(palette);
+    palette = PALETTES[(idx + 1) % PALETTES.length];
+    applyPalette();
+    render();
+    try {
+      localStorage.setItem(PALETTE_KEY, palette);
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  });
+
+  viewToggle.addEventListener('click', () => {
+    const idx = VIEW_MODES.indexOf(viewMode);
+    viewMode = VIEW_MODES[(idx + 1) % VIEW_MODES.length];
+    applyViewMode();
+    try {
+      localStorage.setItem(VIEW_KEY, viewMode);
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  });
+
+  function changeCompactCols(delta) {
+    compactCols = Math.min(20, Math.max(2, compactCols + delta));
+    applyCompactCols();
+    try {
+      localStorage.setItem(COLS_KEY, compactCols);
+    } catch (err) {
+      console.error('儲存失敗', err);
+    }
+  }
+  colsMinus.addEventListener('click', () => changeCompactCols(-1));
+  colsPlus.addEventListener('click', () => changeCompactCols(1));
+
+
+  exportBtn.addEventListener('click', () => {
+    computeOverallTiers();
+    const filtered = currentTab === '全部'
+      ? characters
+      : characters.filter(c => (c.lanes || []).includes(currentTab));
+    const withPower = filtered.filter(c => c.fullData !== false).sort((a, b) => b.power - a.power);
+    const withoutPower = filtered.filter(c => c.fullData === false).sort((a, b) => (b.playerCount || 0) - (a.playerCount || 0));
+    const combined = [...withPower, ...withoutPower];
+
+    const escapeCsv = val => {
+      const s = String(val ?? '');
+      return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+
+    const rows = [['名次', '角色名稱', '戰力', '人數', '分路', '色階']];
+    let rank;
+    combined.forEach((c, i) => {
+      if (i === 0) {
+        rank = 1;
+      } else {
+        const prev = combined[i - 1];
+        const sameGroup = (c.fullData !== false) === (prev.fullData !== false);
+        const sameValue = c.fullData !== false ? prev.power === c.power : (prev.playerCount || 0) === (c.playerCount || 0);
+        rank = sameGroup && sameValue ? prev._rank : i + 1;
+      }
+      c._rank = rank;
+      const fullData = c.fullData !== false;
+      const tierLabel = fullData && c._overallMedal ? ['金', '銀', '銅'][c._overallMedal - 1] : (fullData && c._tierInfo ? c._tierInfo.key : '');
+      rows.push([
+        rank,
+        c.name,
+        fullData ? c.power : '',
+        fullData ? '' : (c.playerCount || 0),
+        (c.lanes || []).join('/'),
+        tierLabel
+      ]);
+    });
+
+    const csvContent = '\uFEFF' + rows.map(r => r.map(escapeCsv).join(',')).join('\r\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    const tabLabel = currentTab === '全部' ? '總排名' : currentTab;
+    link.href = url;
+    link.download = `${title}-${tabLabel}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  });
+
+
+  addBtn.addEventListener('click', addCharacter);
+
+  bulkBtn.addEventListener('click', () => {
+    bulkForm.classList.toggle('open');
+    if (bulkForm.classList.contains('open')) bulkNames.focus();
+  });
+
+  bulkSubmit.addEventListener('click', () => {
+    if (!admin()) return;
+    const lines = bulkNames.value.split('\n').map(s => s.trim()).filter(Boolean);
+    if (lines.length === 0) return;
+    lines.forEach((name, idx) => {
+      characters.push({
+        id: Date.now() + Math.random() + idx,
+        name,
+        power: 0,
+        lanes: [],
+        image: null,
+        fullData: true,
+        playerCount: 0,
+        tier: null,
+        marked: false
+      });
+    });
+    bulkNames.value = '';
+    bulkForm.classList.remove('open');
+    saveData();
+    render();
+  });
+
+  listEl.addEventListener('click', e => {
+    if (!admin()) return;
+    if (e.target.classList.contains('del')) {
+      const id = e.target.dataset.id;
+      characters = characters.filter(c => String(c.id) !== id);
+      render();
+      saveData();
+      return;
+    }
+    if (e.target.classList.contains('mark-btn')) {
+      const id = e.target.dataset.id;
+      const target = characters.find(c => String(c.id) === id);
+      if (target) {
+        target.marked = !target.marked;
+        lastEditedId = id;
+        saveData();
+        render();
+      }
+      return;
+    }
+    if (e.target.dataset.modeToggle) {
+      const id = e.target.dataset.id;
+      const target = characters.find(c => String(c.id) === id);
+      if (target) {
+        target.fullData = target.fullData === false ? true : false;
+        lastEditedId = id;
+        saveData();
+        render();
+      }
+      return;
+    }
+    if (e.target.classList.contains('lane-pill')) {
+      const id = e.target.dataset.id;
+      const lane = e.target.dataset.lane;
+      const target = characters.find(c => String(c.id) === id);
+      if (target) {
+        if (!target.lanes) target.lanes = [];
+        const idx = target.lanes.indexOf(lane);
+        if (idx === -1) target.lanes.push(lane);
+        else target.lanes.splice(idx, 1);
+        lastEditedId = id;
+        saveData();
+        render();
+      }
+      return;
+    }
+    if (e.target.closest('.img-btn')) {
+      const btn = e.target.closest('.img-btn');
+      pendingImageId = btn.dataset.id;
+      imgInput.value = '';
+      imgInput.click();
+      return;
+    }
+    if (e.target.classList.contains('power')) {
+      if (e.target.dataset.count !== undefined) {
+        startEditCount(e.target);
+      } else {
+        startEditPower(e.target);
+      }
+      return;
+    }
+    if (e.target.classList.contains('name')) {
+      startEditName(e.target);
+    }
+  });
+
+  function processImageFile(file, id) {
+    if (!file || !id) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const img = new Image();
+      img.onload = () => {
+        const maxDim = 480;
+        let w = img.width, h = img.height;
+        if (w > h && w > maxDim) { h = h * (maxDim / w); w = maxDim; }
+        else if (h > maxDim) { w = w * (maxDim / h); h = maxDim; }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.75);
+        const target = characters.find(c => String(c.id) === id);
+        if (target) {
+          target.image = dataUrl;
+          lastEditedId = id;
+          saveData();
+          render();
+        }
+      };
+      img.src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  imgInput.addEventListener('change', () => {
+    const file = imgInput.files && imgInput.files[0];
+    processImageFile(file, pendingImageId);
+  });
+
+  document.addEventListener('paste', e => {
+    if (!admin() || !pendingImageId) return;
+    const items = e.clipboardData && e.clipboardData.items;
+    if (!items) return;
+    for (const item of items) {
+      if (item.type && item.type.startsWith('image/')) {
+        const file = item.getAsFile();
+        if (file) {
+          processImageFile(file, pendingImageId);
+          e.preventDefault();
+        }
+        break;
+      }
+    }
+  });
+
+  titleEl.addEventListener('click', () => {
+    if (!admin()) return;
+    if (titleEl.querySelector('input')) return;
+    const current = title;
+    titleEl.innerHTML = `<input type="text" value="${escapeHtml(current)}" maxlength="30">`;
+    const input = titleEl.querySelector('input');
+    input.focus();
+    input.select();
+
+    function commit() {
+      const val = input.value.trim();
+      title = val || current;
+      titleEl.textContent = title;
+      saveTitle();
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') input.blur();
+      if (ev.key === 'Escape') { titleEl.textContent = current; }
+    });
+    input.addEventListener('click', ev => ev.stopPropagation());
+  });
+
+  function startEditName(el) {
+    const id = el.dataset.id;
+    const current = el.dataset.name;
+    el.innerHTML = `<input type="text" value="${current}" maxlength="20">`;
+    const input = el.querySelector('input');
+    input.focus();
+    input.select();
+
+    function commit() {
+      const val = input.value.trim();
+      if (val) {
+        const target = characters.find(c => String(c.id) === id);
+        if (target) {
+          target.name = val;
+          lastEditedId = id;
+          saveData();
+        }
+      }
+      render();
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') input.blur();
+      if (ev.key === 'Escape') { render(); }
+    });
+    input.addEventListener('click', ev => ev.stopPropagation());
+  }
+
+  function startEditPower(el) {
+    const id = el.dataset.id;
+    const current = el.dataset.power;
+    el.innerHTML = `<input type="number" value="${current}">`;
+    const input = el.querySelector('input');
+    input.focus();
+    input.select();
+
+    function commit() {
+      const val = Number(input.value);
+      if (input.value !== '' && !isNaN(val)) {
+        const target = characters.find(c => String(c.id) === id);
+        if (target) {
+          target.power = val;
+          lastEditedId = id;
+          saveData();
+        }
+      }
+      render();
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') input.blur();
+      if (ev.key === 'Escape') { render(); }
+    });
+    input.addEventListener('click', ev => ev.stopPropagation());
+  }
+
+  function startEditCount(el) {
+    const id = el.dataset.id;
+    const current = el.dataset.count;
+    el.innerHTML = `<input type="number" value="${current}">`;
+    const input = el.querySelector('input');
+    input.focus();
+    input.select();
+
+    function commit() {
+      const val = Number(input.value);
+      if (input.value !== '' && !isNaN(val)) {
+        const target = characters.find(c => String(c.id) === id);
+        if (target) {
+          target.playerCount = val;
+          lastEditedId = id;
+          saveData();
+        }
+      }
+      render();
+    }
+
+    input.addEventListener('blur', commit);
+    input.addEventListener('keydown', ev => {
+      if (ev.key === 'Enter') input.blur();
+      if (ev.key === 'Escape') { render(); }
+    });
+    input.addEventListener('click', ev => ev.stopPropagation());
+  }
+
+  function monthLabel(dateObj) {
+    return `${dateObj.getFullYear()}年${String(dateObj.getMonth() + 1).padStart(2, '0')}月`;
+  }
+
+  function monthSortKey(dateObj) {
+    return `${dateObj.getFullYear()}-${String(dateObj.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  async function loadLandingList() {
+    try {
+      const q = query(snapshotsCol, orderBy('sortKey', 'desc'));
+      const snap = await getDocs(q);
+      if (landingLoading.parentNode) landingLoading.remove();
+      const emptyMsg = landingList.querySelector('.landing-empty-msg');
+      if (emptyMsg) emptyMsg.remove();
+      landingList.querySelectorAll('.landing-row').forEach(el => el.remove());
+      if (snap.empty) {
+        const empty = document.createElement('div');
+        empty.className = 'empty landing-empty-msg';
+        empty.textContent = '尚無歷史版本';
+        landingList.appendChild(empty);
+        return;
+      }
+      snap.forEach(docSnap => {
+        const data = docSnap.data();
+        const row = document.createElement('div');
+        row.className = 'landing-row';
+
+        const btn = document.createElement('button');
+        btn.className = 'landing-item';
+        btn.dataset.target = 'snap:' + docSnap.id;
+        btn.textContent = '🗓 ' + (data.label || docSnap.id);
+        row.appendChild(btn);
+
+        const renameBtn = document.createElement('button');
+        renameBtn.className = 'landing-admin-btn';
+        renameBtn.dataset.rename = docSnap.id;
+        renameBtn.textContent = '✎';
+        row.appendChild(renameBtn);
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'landing-admin-btn del';
+        delBtn.dataset.del = docSnap.id;
+        delBtn.textContent = '×';
+        row.appendChild(delBtn);
+
+        landingList.appendChild(row);
+      });
+    } catch (err) {
+      console.error('讀取歷史版本失敗', err);
+      landingLoading.textContent = '讀取歷史版本失敗';
+    }
+  }
+
+  function updateLandingAdminUI() {
+    document.body.classList.toggle('landing-admin', isAdmin);
+  }
+
+  async function enterLive() {
+    historicalMode = false;
+    currentSnapshotId = null;
+    landingScreen.style.display = 'none';
+    appContent.style.display = '';
+    startLive();
+    updateAuthUI();
+  }
+
+  async function enterSnapshot(id) {
+    landingScreen.style.display = 'none';
+    appContent.style.display = '';
+    listEl.innerHTML = '<div class="empty">載入中...</div>';
+    try {
+      const snap = await getDoc(doc(db, 'snapshots', id));
+      const data = snap.data();
+      historicalMode = true;
+      currentSnapshotId = id;
+      characters = (data && data.characters) || [];
+      title = (data && data.title) || '戰力排行榜';
+      titleEl.textContent = title;
+      updateAuthUI();
+    } catch (err) {
+      console.error('讀取歷史版本失敗', err);
+      listEl.innerHTML = '<div class="empty">讀取歷史版本失敗</div>';
+    }
+  }
+
+  landingList.addEventListener('click', async e => {
+    const renameId = e.target.dataset.rename;
+    const delId = e.target.dataset.del;
+    if (renameId) {
+      if (!isAdmin) return;
+      const newLabel = prompt('輸入新的快照名稱：');
+      if (newLabel === null || !newLabel.trim()) return;
+      try {
+        await updateDoc(doc(db, 'snapshots', renameId), { label: newLabel.trim() });
+        loadLandingList();
+      } catch (err) {
+        console.error('重新命名失敗', err);
+        alert('重新命名失敗，請再試一次');
+      }
+      return;
+    }
+    if (delId) {
+      if (!isAdmin) return;
+      if (!confirm('確定要刪除這份快照嗎？此動作無法復原。')) return;
+      try {
+        await deleteDoc(doc(db, 'snapshots', delId));
+        loadLandingList();
+      } catch (err) {
+        console.error('刪除失敗', err);
+        alert('刪除失敗，請再試一次');
+      }
+      return;
+    }
+    const target = e.target.dataset.target;
+    if (!target) return;
+    if (target === 'live') enterLive();
+    else if (target.startsWith('snap:')) enterSnapshot(target.slice(5));
+  });
+
+  backToLanding.addEventListener('click', () => {
+    appContent.style.display = 'none';
+    landingScreen.style.display = '';
+  });
+
+  snapshotBtn.addEventListener('click', async () => {
+    if (!admin()) return;
+    const now = new Date();
+    const defaultLabel = monthLabel(now);
+    const label = prompt('請輸入這份快照的名稱：', defaultLabel);
+    if (label === null) return;
+    const finalLabel = label.trim() || defaultLabel;
+    const sortKey = String(Date.now());
+    if (!confirm(`要將目前資料存成「${finalLabel}」的快照嗎？`)) return;
+    try {
+      await setDoc(doc(db, 'snapshots', sortKey), {
+        label: finalLabel,
+        sortKey,
+        title,
+        characters,
+        savedAt: now.toISOString()
+      });
+      alert(`已儲存「${finalLabel}」快照`);
+    } catch (err) {
+      console.error('儲存快照失敗', err);
+      alert('儲存快照失敗，請再試一次');
+    }
+  });
+
+  loadPreferences();
+  loadLandingList();
+</script>
+</body>
+</html>
